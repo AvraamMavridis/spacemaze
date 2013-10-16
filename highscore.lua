@@ -7,17 +7,15 @@
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 
+--Load database
 local sqlite3 = require "sqlite3"
 local path = system.pathForFile("data.db", system.DocumentsDirectory)
 db = sqlite3.open( path )   
 
 
-
-
 local widget = require "widget"
 local gameoverSound = audio.loadStream ( "gameover.mp3" )
 local buttonClickSound = audio.loadSound("button_click.wav")
-
 
 
 local function onBackBtnRelease()
