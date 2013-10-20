@@ -1,85 +1,74 @@
 -----------------------------------------------------------------------------------------
 --
--- menu.lua
+-- chooseleves.lua
 --
 -----------------------------------------------------------------------------------------
 
+-- include the Corona "storyboard" module
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 
 
 -- include Corona's "widget" library
-
 local widget = require "widget"
 
-
+--include slq library
 local sqlite3 = require "sqlite3"
+--determines in which path the db is stored
 local path = system.pathForFile("data.db", system.DocumentsDirectory)
+--opens the databse
 db = sqlite3.open( path )   
 
 
-
-
-
-	
---------------------------------------------
-
--- forward declarations and other locals
+-- forward declaration
 local playBtn
+local backBtn
 local scoreText
 local buttonClickSound = audio.loadSound("button_click.wav")
 
 
+--this function is triggered when the user clicks on a planet and loads the apropriate scene
 local function onPlayBtnRelease(level)
     audio.play(buttonClickSound)
 	storyboard.gotoScene( level, "fade", 500 )
-	return true	
-end
-
-local function onBackBtnRelease()
-	print(10)
-	-- go to level1.lua scene
-	audio.stop()
-	audio.play(buttonClickSound)
-	storyboard.gotoScene( "menu", "fade", 500 )
-
 	return true	-- indicates successful touch
 end
 
-local backBtn
+--this function is triggered when the user clicks on the back Button to move back to the menu
+local function onBackBtnRelease()
+	audio.stop()
+	audio.play(buttonClickSound)
+	storyboard.gotoScene( "menu", "fade", 500 )
+	return true	-- indicates successful touch
+end
 
 
-
+--this function is the first function that triggered when the scene is loaded and created the scene.
 function scene:createScene( event )
 	local group = self.view
 
 	local positionX = 10+display.contentWidth/7
 
-	
-	
 
 	-- display a background image
 	local background = display.newImageRect( "background2.png", display.contentWidth, display.contentHeight )
 	background:setReferencePoint( display.TopLeftReferencePoint )
 	background.x, background.y = 0, 0
 	group:insert( background )
-    --local minotaur=display.newImage( "minotaur.png" )
-    --minotaur.x=display.contentCenterX
-    --minotaur.y=display.contentCenterY-80
-	
+
+	-- display a levels image
 	local levels = display.newImageRect("levels.png",128,32)
 	levels.x = display.contentCenterX
 	levels.y = 20
 	
 
-
-
+    --finds the highest level that the player has solved
     highestlevel = 0
     for row in db:nrows("SELECT * FROM levelstable WHERE content=(SELECT max(content) FROM levelstable)") do
 	 highestlevel = row.content
 	end
 
-	--print(highestlevel)
+
 
     ------------------------level 1 -----------------------------------------
     if(highestlevel >= 1) then
@@ -554,11 +543,6 @@ function scene:createScene( event )
     end
 
 
-
-
-
-
-
 	backBtn = widget.newButton{
 		label="Menu",
 		labelColor = { default={255}, over={128} },
@@ -574,58 +558,7 @@ function scene:createScene( event )
 	backBtn.y = display.contentHeight - 35
 
 	group:insert( backBtn )
-
-
 	group:insert(levels)
-
-
-
- --    backBtn = widget.newButton{
-	-- 	label="Menu",
-	-- 	labelColor = { default={255}, over={128} },
-	-- 	fontSize=25,
-	-- 	defaultFile="button3.png",
-	-- 	overFile="button-over3.png",
-	-- 	width=154, height=40,
-	-- 	onRelease = onBackBtnRelease	-- event listener function
-	-- }
-
-	-- backBtn:setReferencePoint( display.CenterReferencePoint )
-	-- backBtn.x = display.contentWidth*0.5
-	-- backBtn.y = display.contentHeight - 75
-
-	-- group:insert( backBtn )
-	
-
-
-	
-
-
-
-	-- planet2 = widget.newButton{
-	-- label="1",
-	-- 	labelColor = { default={255}, over={128} },
-	-- 	fontSize=25,
-	-- 	defaultFile="levelplanet.png",
-	-- 	overFile="levelplanet-over.png",
-	-- 	width=62, height=62,
-	-- 	onRelease = function() onPlayBtnRelease('scene2') end
-	-- }
-
-	-- planet2.defaultFile = "levelplanet-over..png"
-
-	-- planet2.x = 120
-	-- planet2.y = 40
-	
-
-	
-	
-	
-	-- all display objects must be inserted into group
-	
-	--group:insert( minotaur )
-	
-	
 
 
 

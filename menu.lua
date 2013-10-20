@@ -18,33 +18,39 @@ storyboard.state2.level = 1
 -- include Corona's "widget" library
 local widget = require "widget"
 
-
+--include slq library
 local sqlite3 = require "sqlite3"
+--determines in which path the db is stored
 local path = system.pathForFile("data.db", system.DocumentsDirectory)
+--opens the databse
 db = sqlite3.open( path ) 
 
 	
 --------------------------------------------
 
--- forward declarations and other locals
-local playBtn
-local creditsBtn
-local buttonClickSound = audio.loadSound("button_click.wav")
+-- forward declarations
+local playBtn --play Button
+local creditsBtn --credits Button
+local highscoreBtn --highscore Button
+local titleLogo --logo image
+--sound click, it is played when the user click a button
+local buttonClickSound = audio.loadSound("button_click.wav") 
 
-local titleLogo
-
+--this function is triggered when the user clicks the Play Button and loads the chooselevel scene
 local function onPlayBtnRelease()
-     audio.play ( buttonClickSound  )
+    audio.play ( buttonClickSound  )
 	storyboard.gotoScene( "chooselevels", "fade", 500 )
 	return true	
 end
 
+--this function is triggered when the user clicks the Credits Button and loads the credits scene
 local function onCreditsBtnRelease()
 	audio.play ( buttonClickSound  )
 	storyboard.gotoScene( "credits_scene", "fade", 500 )
 	return true
 end
 
+--this function is triggered when the user clicks the Highscore Button and loads the credits scene
 local function onHighscoreBtnRelease()
 	audio.play ( buttonClickSound  )
 	storyboard.gotoScene( "highscore", "fade", 500 )
@@ -52,16 +58,17 @@ local function onHighscoreBtnRelease()
 end
 
 
+--this function is the first function that triggered when the scene is loaded and created the scene.
 function scene:createScene( event )
 	local group = self.view
 
 
-	--insert highscore
+	--this function creates the highscoretabe in the database and inserts the score to it
 	db:exec[[CREATE TABLE highscoretable (id INTEGER PRIMARY KEY, content INTEGER);]]
 	local highscorefill =[[INSERT INTO highscoretable VALUES (NULL, ']]..storyboard.state.score..[['); ]]
 	db:exec( highscorefill )
 
-	--insert the highest level of the current game
+	--this function creates the levestable in the database and inserts the level to it
 	db:exec[[CREATE TABLE levelstable (id INTEGER PRIMARY KEY, content INTEGER);]]
 	local levelfill =[[INSERT INTO levelstable VALUES (NULL, ']]..storyboard.state2.level..[['); ]]
 	db:exec( levelfill )
@@ -77,13 +84,13 @@ function scene:createScene( event )
 	titleLogo.x = -300
 	titleLogo.y = 100
 	
-	-- create a widget button (which will loads level1.lua on release)
+	-- create Play Button
 	playBtn = widget.newButton{
 		label="Play",
 		fontSize=30,
 		labelColor = { default={255}, over={128} },
-		defaultFile="button.png",
-		overFile="button-over.png",
+		defaultFile="button.png", --image
+		overFile="button-over.png", --on-press image
 		width=154, height=60,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
@@ -91,6 +98,7 @@ function scene:createScene( event )
 	playBtn.x = display.contentWidth+100
 	playBtn.y = display.contentHeight - 150
 	
+	-- create Credits Button
 	creditsBtn = widget.newButton{
 		label="Credits",
 		fontSize=25,
@@ -104,6 +112,7 @@ function scene:createScene( event )
 	creditsBtn.x = -100
 	creditsBtn.y = display.contentHeight - 100
 	
+	-- create Highscore Button
 	highscoreBtn = widget.newButton{
 		label="Highscore",
 		fontSize=25,
@@ -130,29 +139,26 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
+	--transitions of button to appear on the scene
 	transition.to(titleLogo,{x=display.contentWidth * 0.5,time=3000})
 	transition.to(playBtn,{x=display.contentWidth*0.5,time=3000})
 	transition.to(creditsBtn,{x=display.contentWidth*0.5,time=3000})
 	transition.to(highscoreBtn,{x=display.contentWidth*0.5,time=3000})
+	--remove previous loaded scenes from the memory
     storyboard.removeAll()
-	-- INSERT code here (e.g. start timers, load audio, start listeners, etc.)
-	
 end
 
--- Called when scene is about to move offscreen:
+-- Called when scene is about to move offscreen
 function scene:exitScene( event )
-	local group = self.view
-     print("exit menu")
-     
+	local group = self.view  
 end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
 function scene:destroyScene( event )
 	local group = self.view
-	
-    print("destroy menu")
+	-- widgets must be manually removed
 	if playBtn then
-		playBtn:removeSelf()	-- widgets must be manually removed
+		playBtn:removeSelf()	
 		playBtn = nil
 	end
 	
@@ -160,13 +166,13 @@ function scene:destroyScene( event )
 		creditsBtn:removeSelf()
 		creditsBtn=nil
 	end
-	
+
+	if highscoreBtn then
+		highscoreBtn:removeSelf()
+		highscoreBtn=nil
+	end
 	
 end
-
------------------------------------------------------------------------------------------
--- END OF YOUR IMPLEMENTATION
------------------------------------------------------------------------------------------
 
 -- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )
