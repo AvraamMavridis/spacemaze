@@ -34,6 +34,7 @@ function global.initialize(_leveltime,_nextscene,_maze)
 	background:setReferencePoint( display.TopLeftReferencePoint )
 	background.x, background.y = 0, 0
 
+	--planet sprite
 	planetoptions = {
    		width = 24,
    		height = 24,
@@ -47,8 +48,8 @@ function global.initialize(_leveltime,_nextscene,_maze)
     		name="planetsequence",
 		    start=1,
 		    count=5,
-		    time=500,        -- Optional. In ms.  If not supplied, then sprite is frame-based.
-		    loopCount = 0,    -- Optional. Default is 0 (loop indefinitely)
+		    time=500,       
+		    loopCount = 0,    --  0 (loop indefinitely)
 		    loopDirection = "bounce"    -- Optional. Values include: "forward","bounce"
 		}
 
@@ -59,6 +60,7 @@ function global.initialize(_leveltime,_nextscene,_maze)
 	planetSprite.y = display.contentCenterY
 	planetSprite.name = "planet"
 
+	--explosion sprite
 	explosionoptions = {
    		width = 32,
    		height = 32,
@@ -72,7 +74,7 @@ function global.initialize(_leveltime,_nextscene,_maze)
     		name="explosionsequence",
 		    start=1,
 		    count=24,
-		    time=2000,        -- Optional. In ms.  If not supplied, then sprite is frame-based.
+		    time=2000,        
 		    loopCount = 1,    -- Optional. Default is 0 (loop indefinitely)
 		    loopDirection = "forward"    -- Optional. Values include: "forward","bounce"
 		}
@@ -120,11 +122,12 @@ end
 
 
 
---change gravity on accelerator eventss
+--change gravity on accelerator events
 function global.onTilt( event )
 	physics.setGravity( (-9.8*event.yGravity), (-9.8*event.xGravity) )
 end
 
+--loads the next scene
 function global.nextScene()
 	audio.stop()
 	audio.play( exitSound  )
@@ -134,13 +137,13 @@ function global.nextScene()
     storyboard.gotoScene( ('loadscene'.. nextscene))
 end
 
-
+--loads the game over scene
 function  global.gameOver( )
 	audio.stop()
 	storyboard.gotoScene( "gameover", "fade", 300)
 end
 
-
+--checks the collision with blackholes or aliens
 function global.onCollision( event )
 	if ( event.phase == "began" ) then
        if(event.object1.name=="exitscn" or event.object2.name=="exitscn") then
@@ -163,6 +166,7 @@ function global.onCollision( event )
 	end
 end
 
+--check the collision with the maze and draws circles with random color
 function global.onCollisionDrawCircle( event )
 	if ( event.phase == "began" ) then
         if((event.object1.name =="maze" and event.object2.name =="planet") or (event.object2.name =="maze" and event.object1.name =="planet")) then
@@ -177,9 +181,6 @@ function global.onCollisionDrawCircle( event )
         end 
 	end
 end
-
-
-
 
 
 --function to display the time
@@ -201,10 +202,10 @@ function global.checkTime(event)
     explosionSprite.y=planetSprite.y
     explosionSprite:play()
     timer.performWithDelay( 500, global.gameOver )
-	-- global.gameOver()
   end
 end
 
+--function to change the gravity of the scene
 function global.changeGravity( )
 	if(	planetSprite.y > display.contentCenterY + 10 ) then
 	 	physics.setGravity( 0,7 )

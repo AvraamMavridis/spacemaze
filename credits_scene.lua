@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- Credits
+-- credits_scene.lua
 --
 -----------------------------------------------------------------------------------------
 
@@ -28,36 +28,28 @@ function scene:createScene( event )
 	background:setReferencePoint( display.TopLeftReferencePoint )
 	background.x, background.y = 0, 0
 
+	-- display a developer image
 	local developer = display.newImageRect( "developer.png", display.contentWidth, display.contentHeight )
 	developer:setReferencePoint( display.TopLeftReferencePoint )
 	developer.x, developer.y = 0, 0
 
+    -- display a facebook image
 	local facebook = display.newImageRect( "Facebook.png",64,64)
 	facebook.x = display.contentCenterX - 70
 	facebook.y = display.contentCenterY 
 	facebook:addEventListener( "tap", function() system.openURL( "https://www.facebook.com/avraammakis" ) end )
 
+	-- display a linkedin image
 	local linkedin = display.newImageRect( "Linkedin.png",64,64)
 	linkedin.x = display.contentCenterX
 	linkedin.y = display.contentCenterY 
 	linkedin:addEventListener( "tap", function() system.openURL( "http://www.linkedin.com/pub/avraam-mavridis/31/b65/53a" ) end )
 
+	-- display a twitter image
 	local twitter = display.newImageRect( "Twitter.png",64,64)
 	twitter.x = display.contentCenterX + 70
 	twitter.y = display.contentCenterY 
 	twitter:addEventListener( "tap", function() system.openURL( "https://twitter.com/avraamakis" ) end )
-
-	
-
-
-	
-	-- local developerText=display.newText("Avraam Mavridis \navraammamauridis@gmail.com \ntwitter.com/avraamakis", 20, 30)
-	-- developerText.size = 20
-	-- developerText:setReferencePoint( display.CenterReferencePoint )
-	-- developerText:setTextColor ( 48, 78, 96 ) 
-	-- developerText.x = display.contentWidth * 0.5
-	-- developerText.y = 150
-
 
 
 	
@@ -75,7 +67,6 @@ function scene:createScene( event )
 	backBtn.y = display.contentHeight - 75
 	
 	group:insert( background )
-
 	group:insert( backBtn )
 	group:insert( developer )
 	group:insert( facebook )
@@ -88,33 +79,24 @@ end
 
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
-	local group = self.view
-	
-	
-	
+	local group = self.view	
 end
 
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-	
-
-	
 end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
 function scene:destroyScene( event )
 	local group = self.view
-
 	if backBtn then
 		backBtn:removeSelf()
 		backBtn=nil
 	end
 end
 
------------------------------------------------------------------------------------------
--- END OF YOUR IMPLEMENTATION
------------------------------------------------------------------------------------------
+
 
 -- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )

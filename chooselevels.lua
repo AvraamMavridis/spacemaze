@@ -573,29 +573,26 @@ end
 -- Called when scene is about to move offscreen:
 function scene:exitScene( event )
 	local group = self.view
-     print("exit menu")
-     
+
 end
 
 -- If scene's view is removed, scene:destroyScene() will be called just prior to:
 function scene:destroyScene( event )
 	local group = self.view
 	
-    print("destroy menu")
+-- widgets must be manually removed
 	if playBtn then
-		playBtn:removeSelf()	-- widgets must be manually removed
+		playBtn:removeSelf()	
 		playBtn = nil
 	end
-	
-	
-	
-	
-	
+	if backBtn then
+		backBtn:removeSelf()	
+		backBtn = nil
+	end
+
 end
 
------------------------------------------------------------------------------------------
--- END OF YOUR IMPLEMENTATION
------------------------------------------------------------------------------------------
+
 
 -- "createScene" event is dispatched if scene's view does not exist
 scene:addEventListener( "createScene", scene )
